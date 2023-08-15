@@ -575,31 +575,51 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"dV6cC":[function(require,module,exports) {
 var _three = require("three");
+// All Other stuff must come after the above^^
+//Instatiate Orbit Tools
 var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
+//1) Construct Renderer. camera scene
 const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const scene = new _three.Scene();
 const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const orb = new (0, _orbitControlsJs.OrbitControls)(camera, renderer.domElement);
+orb.update();
+//This bit animates the rotating box
+const animateOrbit = function() {
+    requestAnimationFrame(animateOrbit);
+    renderer.render(scene, camera);
+};
+animateOrbit();
+//Create a Box
 const geometry = new _three.BoxGeometry();
 const material = new _three.MeshBasicMaterial({
     color: 0x00ff00
 });
 const cube = new _three.Mesh(geometry, material);
+cube.translateX(10);
+scene.add(cube);
 scene.add(cube);
 camera.position.z = 5;
-orb.update();
 const axeshelper = new _three.AxesHelper(5);
 scene.add(axeshelper);
-const animate = function() {
-    requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
-};
-animate();
+//This bit animates the rotating box
+// const animate1 = function () {
+//     requestAnimationFrame( animate1 );
+//     cube.rotation.x += 0.01;
+//     cube.rotation.y += 0.01;
+//     renderer.render( scene, camera );
+// };
+// animate1();
 renderer.render(scene, camera);
+//Stick this function at the end: 
+//it will auto re-center the scene if the window is resized
+window.addEventListener("resize", function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 },{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv"}],"ktPTu":[function(require,module,exports) {
 /**
